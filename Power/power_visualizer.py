@@ -56,10 +56,10 @@ BATTERY_CAPACITY = 36.5      #Total battery capacity in Watt hours
 COMM_STRING = "Comms"       #Column zero value for communications row
 BURN_STRING = "Burn"        #Column zero value for burn row
 SUN_STRING = "Sun Pointing" #Column zero value for sun pointing phase
-MAX_CHARGE_FRAC = .9        #Maximum charge state from 0-1
+MAX_CHARGE_FRAC = 1        #Maximum charge state from 0-1
 MIN_CHARGE_FRAC = .4        #Minimum charge state from 0-1
-BATT_EFF = 0                #Battery efficiency in percent
-CONVERTER_EFF = 0          #Converter efficiency in percent
+BATT_EFF = 100               #Battery efficiency in percent
+CONVERTER_EFF = 100          #Converter efficiency in percent
 
 #Files
 
@@ -263,15 +263,15 @@ for t in range(TIME_STEP, SIM_TIME*60, TIME_STEP):
 
         power_draw += thrust_power
 
-        power_generated.append(power_gen/(1+(BATT_EFF/100)))
+        power_generated.append(power_gen*(BATT_EFF/100))
 
         #print(power_draw)
 
-        power_drawn.append(power_draw*(1+(CONVERTER_EFF/100)))
+        power_drawn.append(power_draw/(CONVERTER_EFF/100))
 
         #Iterate the battery state for current timestep
 
-        new_batt_state = batt_state[len(batt_state)-1] + (power_gen/(1+(BATT_EFF/100)) - power_draw*(1+(CONVERTER_EFF/100)))*TIME_STEP/(60**2)
+        new_batt_state = batt_state[len(batt_state)-1] + ((power_gen*(BATT_EFF/100)) - (power_draw/(CONVERTER_EFF/100)))*TIME_STEP/(60**2)
 
         #Check for overcharge and limit battery state
 
